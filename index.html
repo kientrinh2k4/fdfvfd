@@ -5,16 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Từ vựng tiếng Trung</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      text-align: center;
-      padding: 20px;
-      margin: 0;
-      background-color: #fffdf5;
+    * {
+      box-sizing: border-box;
     }
 
-    #word-box {
-      margin-top: 20px;
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+      background-color: #fffdf5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #main-container {
+      margin-top: auto; /* đẩy xuống dưới */
+      padding: 20px;
+      text-align: center;
     }
 
     .han {
@@ -35,39 +43,41 @@
       margin-bottom: 20px;
     }
 
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 10px;
+    }
+
     button {
       font-size: 6vh;
       padding: 10px 20px;
-      margin: 10px;
-      cursor: pointer;
       border: none;
       border-radius: 12px;
       background-color: #457b9d;
       color: white;
       width: 80px;
+      cursor: pointer;
     }
 
     button:hover {
       background-color: #1d3557;
     }
-
-    #controls {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-    }
   </style>
 </head>
 <body>
-  <div id="word-box">
-    <div class="han" id="han">Đang tải...</div>
-    <div class="pinyin" id="pinyin"></div>
-    <div class="nghia" id="nghia"></div>
-  </div>
+  <div id="main-container">
+    <div id="word-box">
+      <div class="han" id="han">Đang tải...</div>
+      <div class="pinyin" id="pinyin"></div>
+      <div class="nghia" id="nghia"></div>
+    </div>
 
-  <div id="controls">
-    <button onclick="prevWord()">&#8592;</button>
-    <button onclick="nextWord()">&#8594;</button>
+    <div id="controls">
+      <button onclick="prevWord()">&#8592;</button>
+      <button onclick="nextWord()">&#8594;</button>
+    </div>
   </div>
 
   <script>
