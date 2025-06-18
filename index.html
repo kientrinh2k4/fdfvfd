@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Từ vựng tiếng Trung</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    .han {
+      font-size: 60px;
+      color: red;
+      margin-bottom: 8px;
+    }
+    .pinyin {
+      font-size: 36px;
+      color: blue;
+      margin-bottom: 12px;
+    }
+    .nghia {
+      font-size: 24px;
+      color: black;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="word-box">Đang tải từ vựng...</div>
+
+  <div id="controls">
+    <button onclick="prevWord()">&lt;</button>
+    <button onclick="nextWord()">&gt;</button>
+  </div>
+
+  <script>
+    let data = [];
+    let index = 0;
+
+    fetch("https://script.google.com/macros/s/AKfycbz2NzqApTHFRhNq3VUL5YI3Vyl8F-AIwb--5Q5mWEkqypESY5YWMZsjiPkLOu8f3kto/exec")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        if (data.length === 0) {
+          document.getElementById("word-box").innerText = "Không có dữ liệu từ vựng.";
+        } else {
+          showWord();
+        }
+      })
+      .catch(err => {
+        document.getElementById("word-box").innerText = "Lỗi tải dữ liệu!";
+        console.error(err);
+      });
+
+    function showWord() {
+      const word = data[index];
+      document.getElementById("word-box").innerHTML = `
+        <div class="han">${word.han}</div>
+        <div class="pinyin">${word.pinyin || ""}</div>
+        <div class="nghia">${word.nghia || ""}</div>
+      `;
+    }
+
+    function nextWord() {
+      index = (index + 1) % data.length;
+      showWord();
+    }
+
+    function prevWord() {
+      index = (index - 1 + data.length) % data.length;
+      showWord();
+    }
+  </script>
+</body>
+</html>
