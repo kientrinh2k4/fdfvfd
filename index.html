@@ -1,108 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Từ vựng tiếng Trung</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: system-ui, sans-serif;
       text-align: center;
-      padding: 30px;
+      padding: 20px;
+      margin: 0;
+      background-color: #fffdf5;
     }
+
+    #word-box {
+      margin-top: 20px;
+    }
+
     .han {
-      font-size: 60px;
-      color: red;
-      margin-bottom: 8px;
+      font-size: 7vh;
+      color: #e63946;
+      margin-bottom: 10px;
     }
+
     .pinyin {
-      font-size: 36px;
-      color: blue;
-      margin-bottom: 12px;
+      font-size: 5vh;
+      color: #1d3557;
+      margin-bottom: 10px;
     }
+
     .nghia {
-      font-size: 24px;
-      color: black;
+      font-size: 4vh;
+      color: #2a9d8f;
       margin-bottom: 20px;
     }
+
     button {
-      font-size: 24px;
+      font-size: 6vh;
       padding: 10px 20px;
       margin: 10px;
       cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      background-color: #457b9d;
+      color: white;
+      width: 80px;
     }
+
+    button:hover {
+      background-color: #1d3557;
+    }
+
     #controls {
-      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
     }
   </style>
 </head>
 <body>
-  <div id="word-box">Đang tải từ vựng...</div>
+  <div id="word-box">
+    <div class="han" id="han">Đang tải...</div>
+    <div class="pinyin" id="pinyin"></div>
+    <div class="nghia" id="nghia"></div>
+  </div>
 
   <div id="controls">
-    <button onclick="prevWord()">&lt;</button>
-    <button onclick="nextWord()">&gt;</button>
+    <button onclick="prevWord()">&#8592;</button>
+    <button onclick="nextWord()">&#8594;</button>
   </div>
 
   <script>
+    const url = 'https://script.google.com/macros/s/AKfycbz2NzqApTHFRhNq3VUL5YI3Vyl8F-AIwb--5Q5mWEkqypESY5YWMZsjiPkLOu8f3kto/exec';
+
     let data = [];
     let index = 0;
 
-    fetch("https://script.google.com/macros/s/AKfycbz2NzqApTHFRhNq3VUL5YI3Vyl8F-AIwb--5Q5mWEkqypESY5YWMZsjiPkLOu8f3kto/exec")
-      .then(res => res.json())
+    function loadIndex() {
+      const saved = localStorage.getItem('wordIndex');
+      if (saved !== null) {
+        const num = parseInt(saved);
+        if (!isNaN(num) && num >= 0 && num < data.length) {
+          index = num;
+        }
+      }
+    }
+
+    function saveIndex() {
+      localStorage.setItem('wordIndex', index);
+    }
+
+    function showWord() {
+      if (data.length === 0) {
+        document.getElementById('han').innerText = 'Không có dữ liệu';
+        document.getElementById('pinyin').innerText = '';
+        document.getElementById('nghia').innerText = '';
+        return;
+      }
+      const word = data[index];
+      document.getElementById('han').innerText = word.han || '';
+      document.getElementById('pinyin').innerText = word.pinyin || '';
+      document.getElementById('nghia').innerText = word.nghia || 'Chưa có nghĩa';
+      saveIndex();
+    }
+
+    function nextWord() {
+      index = (index + 1) % data.length;
+      showWord();
+    }
+
+    function prevWord() {
+      index = (index - 1 + data.length) % data.length;
+      showWord();
+    }
+
+    fetch(url)
+      .then(response => response.json())
       .then(json => {
         data = json;
-        if (data.length === 0) {
-          document.getElementById("word-box").innerText = "Không có dữ liệu từ vựng.";
-        } else {
-          showWord();
-        }
+        loadIndex();
+        showWord();
       })
-      .catch(err => {
-        document.getElementById("word-box").innerText = "Lỗi tải dữ liệu!";
-        console.error(err);
+      .catch(error => {
+        console.error('Lỗi tải dữ liệu:', error);
+        document.getElementById('han').innerText = 'Lỗi tải dữ liệu';
       });
-
-   function showWord() {
-  const word = data[index];
-  document.getElementById("word-box").innerHTML = `
-    <div class="han">${word.han}</div>
-    <div class="pinyin">${word.pinyin || ""}</div>
-    <div class="nghia">${word.nghia || ""}</div>
-  `;
-}
-
-function saveIndex() {
-  localStorage.setItem("wordIndex", index);
-}
-
-function nextWord() {
-  index = (index + 1) % data.length;
-  showWord();
-  saveIndex();
-}
-
-function prevWord() {
-  index = (index - 1 + data.length) % data.length;
-  showWord();
-  saveIndex();
-}
-
-function loadIndex() {
-  const saved = localStorage.getItem("wordIndex");
-  if (saved !== null) {
-    const num = parseInt(saved);
-    if (!isNaN(num) && num >= 0 && num < data.length) {
-      index = num;
-    }
-  }
-}
-
-// Khi trang tải
-window.onload = function() {
-  loadIndex();
-  showWord();
-};
-
   </script>
 </body>
 </html>
