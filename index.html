@@ -62,24 +62,47 @@
         console.error(err);
       });
 
-    function showWord() {
-      const word = data[index];
-      document.getElementById("word-box").innerHTML = `
-        <div class="han">${word.han}</div>
-        <div class="pinyin">${word.pinyin || ""}</div>
-        <div class="nghia">${word.nghia || ""}</div>
-      `;
-    }
+   function showWord() {
+  const word = data[index];
+  document.getElementById("word-box").innerHTML = `
+    <div class="han">${word.han}</div>
+    <div class="pinyin">${word.pinyin || ""}</div>
+    <div class="nghia">${word.nghia || ""}</div>
+  `;
+}
 
-    function nextWord() {
-      index = (index + 1) % data.length;
-      showWord();
-    }
+function saveIndex() {
+  localStorage.setItem("wordIndex", index);
+}
 
-    function prevWord() {
-      index = (index - 1 + data.length) % data.length;
-      showWord();
+function nextWord() {
+  index = (index + 1) % data.length;
+  showWord();
+  saveIndex();
+}
+
+function prevWord() {
+  index = (index - 1 + data.length) % data.length;
+  showWord();
+  saveIndex();
+}
+
+function loadIndex() {
+  const saved = localStorage.getItem("wordIndex");
+  if (saved !== null) {
+    const num = parseInt(saved);
+    if (!isNaN(num) && num >= 0 && num < data.length) {
+      index = num;
     }
+  }
+}
+
+// Khi trang tải
+window.onload = function() {
+  loadIndex();
+  showWord();
+};
+
   </script>
 </body>
 </html>
